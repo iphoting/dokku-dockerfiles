@@ -13,9 +13,8 @@ WORKDIR /usr/src/app
 COPY Gemfile Gemfile.lock .ruby-version ./
 ENV BUNDLER_WITHOUT="development test"
 ENV BUNDLE_DEPLOYMENT="true"
-RUN gem install bundler && bundle install --no-cache
-RUN rm -rf vendor/bundle/ruby/*/cache/ && \
-	find vendor/bundle/ruby/*/gems/ -name "*.c" -delete && \
+RUN gem update --system && gem install bundler && bundle install --no-cache
+RUN find vendor/bundle/ruby/*/gems/ -name "*.c" -delete && \
 	find vendor/bundle/ruby/*/gems/ -name "*.o" -delete
 
 FROM ruby:3.1.2-alpine
@@ -26,6 +25,6 @@ COPY . .
 
 ENV BUNDLER_WITHOUT="development test"
 ENV BUNDLE_DEPLOYMENT="true"
-RUN gem install bundler && bundle install --no-cache
+RUN gem update --system && gem install bundler && bundle install --no-cache
 
 CMD ["bundle", "exec", "rackup"]
